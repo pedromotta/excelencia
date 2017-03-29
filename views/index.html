@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="br" ng-app="excelencia">
+  <head>
+    <meta charset="utf-8">
+    <title>Excelencia</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular.min.js" charset="utf-8"></script>
+  </head>
+  <body ng-controller="IndexController as vm">
+    <h1>Publicações</h1>
+    <div>
+      <form>
+        <label for="btnSelectDirectory">Selecione a pasta para fazer o download:</label>
+        <button type="button" id="btnSelectDirectory" ng-click="vm.selectDirectoryClick()">SELECIONAR</button>
+      </form>
+      <span>{{vm.directoryToDownload || 'Nenhuma pasta selecionada'}}</span>
+    </div>
+    <ol>
+      <li>Caderno do TRT da 1ª Região - Judiciário</li>
+      <li>Caderno do TRT da 2ª Região - Judiciário</li>
+    </ol>
+    <span>{{vm.statusDownload}}</span>
+    <div>
+      <button type="button" id="btnDownloadFiles" ng-click="vm.downloadFiles()">Baixar publicações</button>
+    </div>
+  </body>
+  <script src="./../renderer-process/excelencia.module.js"></script>
+  <script type="text/javascript">
+    require('../renderer-process/index.controller.js')
+  </script>
+</html>
