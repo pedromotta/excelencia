@@ -1,7 +1,7 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const url = require('url');
-const glob = require('glob')
+const glob = require('glob');
 
 let win;
 
@@ -12,10 +12,10 @@ function createWindow() {
   });
 
   win.loadURL(url.format({
-    pathname: path.join(__dirname, '/views/index.html'),
+    pathname: path.join(__dirname, '/sections/index.html'),
     protocol: 'file:',
     slashes: true
-  }))
+  }));
 
   win.webContents.openDevTools();
 
