@@ -14,10 +14,9 @@
       </form>
       <span>{{vm.directoryToDownload || 'Nenhuma pasta selecionada'}}</span>
     </div>
-    <ol>
-      <li>Caderno do TRT da 1ª Região - Judiciário</li>
-      <li>Caderno do TRT da 2ª Região - Judiciário</li>
-    </ol>
+    <ul>
+      <li ng-repeat="numRegion in vm.regions">Caderno do TRT da {{numRegion}}ª Região - Judiciário | <span ng-show=vm.downloading>{{vm.statusDownloadRegion[numRegion]}}%</span></li>
+    </ul>
     <span>{{vm.statusDownload}}</span>
     <div>
       <button type="button" id="btnDownloadFiles" ng-click="vm.downloadFiles()">Baixar publicações</button>

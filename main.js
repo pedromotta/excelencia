@@ -7,8 +7,8 @@ let win;
 
 function createWindow() {
   win = new BrowserWindow({
-    width: 500,
-    height: 350
+    width: 800,
+    height: 500
   });
 
   win.loadURL(url.format({

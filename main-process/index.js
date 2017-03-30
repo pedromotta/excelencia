@@ -1,55 +1,85 @@
-const request = require('request');
+const dialog = require('electron').dialog;
 const fs = require('fs');
 const ipc = require('electron').ipcMain;
-const dialog = require('electron').dialog;
+const request = require('request');
 
-ipc.on('select-directory', function (event) {
+let targetPath = '';
+
+let getProgress = (received, total) => {
+  var percentage = (received * 100) / total;
+  return percentage;
+}
+
+let onReceiveData = (event) => {
+  return function (data) {
+    event.sender.send('download-progress', data);
+  }
+}
+
+let downloadDiarioOficial = (regionNumber, onData) => {
+  console.log(`Download ${regionNumber} started`);
+  return new Promise((resolve, reject) => {
+    let received_bytes = 0;
+    let total_bytes = 0;
+    let regionNumberString = ('0' + regionNumber).slice(-2);
+    let fileName = `Diario_J_${regionNumberString}.pdf`;
+
+    let req = request({
+      method: 'GET',
+      uri: `https://aplicacao.jt.jus.br/${fileName}`
+    });
+
+    let out = fs.createWriteStream(`${targetPath}/${fileName}`);
+
+    out.on('error', (err) => {
+      console.error('Error ao criar arquivo.', err);
+      reject(err);
+    })
+
+    req.pipe(out);
+
+    req.on('response', (data) => {
+      // Change the total bytes value to get progress later.
+      total_bytes = parseInt(data.headers['content-length']);
+    });
+
+    req.on('data', (chunk) => {
+      // Update the received bytes
+      received_bytes += chunk.length;
+      let perc = getProgress(received_bytes, total_bytes);
+      onData({
+        regionNumber: regionNumber,
+        perc: perc
+      });
+    });
+
+    req.on('end', resolve);
+  });
+}
+
+ipc.on('select-directory', (event) => {
   dialog.showOpenDialog({
     properties: ['openDirectory']
-  }, function (path) {
+  }, function(path) {
     if (path) {
+      targetPath = path;
       event.sender.send('selected-directory', path);
     }
   });
 });
 
-ipc.on('download-files', function (event, targetPath) {
-    // Save variable to know progress
-    var received_bytes = 0;
-    var total_bytes = 0;
-    var req = request({
-        method: 'GET',
-        uri: 'https://aplicacao.jt.jus.br/Diario_J_01.pdf'
-    });
+ipc.on('download-files', (event, regions) => {
+  let downloads = regions.map((region) => {
+    return downloadDiarioOficial(region, onReceiveData(event));
+  })
 
-    var out = fs.createWriteStream(`${targetPath}/Diario_J_01.pdf`);
-
-    out.on('error', (err) => {
-      console.log(err);
+  Promise.all(downloads)
+    .then(() => {
+      console.log('Download done.');
+      event.sender.send('download-finish');
     })
-
-    req.pipe(out);
-
-    req.on('response', function ( data ) {
-        // Change the total bytes value to get progress later.
-        total_bytes = parseInt(data.headers['content-length' ]);
-    });
-
-    req.on('data', function(chunk) {
-        // Update the received bytes
-        received_bytes += chunk.length;
-
-        let perc = showProgress(received_bytes, total_bytes);
-        event.sender.send('download-progress', perc);
-    });
-
-    req.on('end', function() {
-        event.sender.send('download-finish');
-    });
+    .catch((err) => {
+      console.error('Download error', err);
+      event.sender.send('download-error', err);
+    })
 });
-
-function showProgress(received,total){
-    var percentage = (received * 100) / total;
-    console.log(percentage + "% | " + received + " bytes out of " + total + " bytes.");
-    return percentage;
-}
