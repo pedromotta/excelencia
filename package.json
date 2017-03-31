@@ -4,6 +4,7 @@
   "description": "",
   "main": "main.js",
   "dependencies": {
+    "cheerio": "^0.22.0",
     "glob": "^7.1.1",
     "request": "^2.81.0"
   },
