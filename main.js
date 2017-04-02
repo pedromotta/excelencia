@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const {app, BrowserWindow} = require('electron');
 const path = require('path');
 const url = require('url');
 const glob = require('glob');
@@ -6,29 +6,29 @@ const glob = require('glob');
 let win;
 
 function createWindow() {
-  win = new BrowserWindow({
-    width: 800,
-    height: 500
-  });
+    win = new BrowserWindow({
+        width: 800,
+        height: 500
+    });
 
-  win.loadURL(url.format({
-    pathname: path.join(__dirname, '/sections/index.html'),
-    protocol: 'file:',
-    slashes: true
-  }));
+    win.loadURL(url.format({
+        pathname: path.join(__dirname, '/sections/index.html'),
+        protocol: 'file:',
+        slashes: true
+    }));
 
-  win.webContents.openDevTools();
+    win.webContents.openDevTools();
 
-  win.on('closed', () => {
-    win = null;
-  })
+    win.on('closed', () => {
+        win = null;
+    })
 }
 
 function loadMainProcess() {
-  let files = glob.sync(path.join(__dirname, 'main-process/**/*.js'));
-  files.forEach(function (file) {
-    require(file);
-  });
+    let files = glob.sync(path.join(__dirname, 'main-process/**/*.js'));
+    files.forEach(function (file) {
+        require(file);
+    });
 }
 
 loadMainProcess();
@@ -36,9 +36,9 @@ loadMainProcess();
 app.on('ready', createWindow);
 
 app.on('activate', () => {
-  if (!win) {
-    createWindow();
-  }
+    if (!win) {
+        createWindow();
+    }
 });
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";

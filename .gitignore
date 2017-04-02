@@ -1,4 +1,8 @@
 node_modules
+bower_components
 .DS_Store
 *.pdf
 .log
+.editorconfig
+.idea
+*.iml

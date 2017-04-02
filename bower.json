@@ -1,0 +1,17 @@
+{
+  "name": "excelencia",
+  "description": "",
+  "main": "main.js",
+  "authors": [
+    "Pedro Motta <pmotta@thoughtworks.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/pedromotta/excelencia",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

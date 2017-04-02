@@ -1,53 +1,60 @@
 <!DOCTYPE html>
 <html lang="br" ng-app="excelencia">
-  <head>
+<head>
     <meta charset="utf-8">
     <title>Excelencia</title>
     <link rel="stylesheet" href="../assets/css/photon.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular.min.js" charset="utf-8"></script>
-  </head>
-  <body ng-controller="IndexController as vm">
-    <div class="window">
-      <header class="toolbar toolbar-header">
+    <script type="text/javascript" src="../bower_components/angular/angular.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../bower_components/log4javascript/log4javascript.js" charset="utf-8"></script>
+</head>
+<body ng-controller="IndexController as vm">
+<div class="window">
+    <header class="toolbar toolbar-header">
         <h1 class="title">Publicações</h1>
         <div class="toolbar-actions">
-          <button class="btn btn-default" id="btnSelectDirectory" ng-click="vm.selectDirectoryClick()">
-            <span class="icon icon-folder"></span>
-          </button>
-          <span>{{vm.directoryToDownload || 'Nenhuma pasta selecionada'}}</span>
+            <button class="btn btn-default" ng-click="vm.onClickSelectFolder()">
+                <span class="icon icon-folder"></span>
+            </button>
+            <span>{{vm.folderToDownload || 'Nenhuma pasta selecionada'}}</span>
         </div>
-      </header>
-      <div class="window-content">
+    </header>
+    <div class="window-content">
         <table class="table-striped">
-          <thead>
+            <thead>
             <tr>
-              <th style="width: 10px"><input type="checkbox" ng-model="vm.isAllRegions" ng-change="vm.selectAllRegions()"></th>
-              <th>Publicação</th>
-              <th style="width: 50px">Disponível?</th>
-              <th style="width: 60px">Download</th>
+                <th style="width: 10px"><input type="checkbox" ng-model="vm.isAllRegions"
+                                               ng-change="vm.onSelectAllRegions()"></th>
+                <th>Publicação</th>
+                <th style="width: 50px">Disponível?</th>
+                <th style="width: 60px">Download</th>
+                <th style="width: 60px">Abrir</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             <tr ng-repeat="region in vm.selectedRegions">
-              <td><input type="checkbox" ng-model="region.selected" ng-change="vm.regionToggled()"></td>
-              <td>Caderno do TRT da {{region.numRegion}}ª Região - Judiciário</td>
-              <td><span ng-show=vm.checking>Verificando...</span><span ng-hide=vm.checking>{{vm.statusLink[$index].status === true ? 'Sim' : 'Nao'}}</span></td>
-              <td><span ng-show=vm.downloading>{{vm.statusDownloadRegion[region.numRegion] || 0}}%</span></td>
+                <td><input type="checkbox" ng-model="region.selected" ng-change="vm.onToggleRegionToDownload()"></td>
+                <td>Caderno do TRT da {{region.numRegion}}ª Região - Judiciário</td>
+                <td><span ng-show=vm.isCheckingLinks>Verificando...</span><span ng-hide=vm.isCheckingLinks>{{vm.statusLink[$index].status === true ? 'Sim' : 'Nao'}}</span>
+                </td>
+                <td><span ng-show=vm.isDownloading>{{vm.statusDownloadRegion[region.numRegion] || 0}}%</span></td>
+                <td><span class="icon icon-doc-text" ng-show=!!vm.availableFiles[region.numRegion] ng-click="vm.openPublication(region.numRegion)"></span></td>
             </tr>
-          </tbody>
+            </tbody>
         </table>
-      </div>
-      <footer class="toolbar toolbar-footer">
-        <div class="toolbar-actions">
-          <h1 class="title">{{vm.statusDownload || 'Ola'}}</h1>
-          <button class="btn btn-default" ng-click="vm.cancelDownload()">Cancelar</button>
-          <button class="btn btn-primary pull-right" ng-click="vm.downloadFiles()">Download</button>
-        </div>
-      </footer>
     </div>
-  </body>
-  <script src="./../renderer-process/excelencia.module.js"></script>
-  <script type="text/javascript">
-    require('../renderer-process/index.controller.js')
-  </script>
+    <footer class="toolbar toolbar-footer">
+        <div class="toolbar-actions">
+            <h1 class="title">{{vm.messageStatus || 'Ola'}}</h1>
+            <button class="btn btn-default" ng-click="">Cancelar</button>
+            <button class="btn btn-primary pull-right" ng-click="vm.download()">Download</button>
+        </div>
+    </footer>
+</div>
+</body>
+<script type="text/javascript">
+    require('../renderer-process/excelencia.module.js');
+    require('../assets/services/logger.service.js');
+    require('../renderer-process/index/index.service.js');
+    require('../renderer-process/index/index.controller.js')
+</script>
 </html>

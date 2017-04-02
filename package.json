@@ -8,7 +8,9 @@
     "glob": "^7.1.1",
     "request": "^2.81.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "electron": "^1.6.2"
+  },
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
